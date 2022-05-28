@@ -20,6 +20,16 @@ import "./css/home.css";
 //dummy
 import PastDummy from "../api/dummy/PastDummy";
 
+//TimePicker (나중에 공부해서 component화 할 것)
+import {TimePicker} from "antd"
+import 'antd/dist/antd.min.css'
+const format = "HH:mm";
+const defaultHour = ["09:00", "22:00"];
+const defaultMinuteStep = 30;
+
+
+
+
 function Home() {
     let navigate = useNavigate()
     
@@ -40,26 +50,14 @@ function Home() {
 
                     <CardFieldset>
                         <div style={{ marginTop: "10px" }}>
-                            <a>약속 주차 설정</a>
+                            <h6>약속 주차 설정</h6>
                         </div>
                     </CardFieldset>
 
                     <CardFieldset>
                         <div style={{ marginTop: "10px" }}>
-                            <a>약속 시간대 설정</a>
-                            <Select
-                                options={PastDummy}
-                                onChange={setPast0}
-                                isSearchable={false}
-                            />
-                            <a>부터</a>
-                            <Select
-                                options={PastDummy}
-                                onChange={setPast1}
-                                isSearchable={false}
-                            />
-                            <a>까지</a>
-
+                            <h6>약속 시간대 설정</h6>
+                            <TimePicker.RangePicker status="error" format={format} minuteStep={defaultMinuteStep} defaultPickerValue={defaultHour}/>
                         </div>
                     </CardFieldset>
 
