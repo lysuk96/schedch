@@ -7,6 +7,7 @@ import {
     RoomCardWrapper,
     CardBody,
 } from "../components/Card";
+import SchedulerTest from "./SchedulerTest";
 
 //css
 import "./css/room.css"
@@ -49,11 +50,11 @@ function TabContent(props) {
 
     if(props.tab == 0){
         return (
-            <div/>
+            <SchedulerTest></SchedulerTest>
         )
     } else if(props.tab ==1) {
         return(
-            <div></div>
+            <SchedulerTest/>
         )
     }
 }
