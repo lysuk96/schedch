@@ -8,12 +8,15 @@ import {
     CardBody,
 } from "../components/Card";
 
+//css
+import "./css/room.css"
+
 function Room() {
     let [tab, setTab] = useState(0)
     const navigate = useNavigate()
 
     return(
-        <div className="Home">
+        <div className="Room">
             <RoomCardWrapper>
                 <CardBody>
                     <div class="schedular">
