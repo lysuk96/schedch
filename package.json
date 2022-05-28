@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "webpack-dev-server": "^4.9.0"
+  },
+  "dependencies": {
+    "react-table-drag-select": "^0.3.1"
+  }
+}
