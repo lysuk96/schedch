@@ -26,7 +26,8 @@ import PastDummy from "../api/dummy/PastDummy";
 //TimePicker (나중에 공부해서 component화 할 것)
 import {TimePicker} from "antd"
 import 'antd/dist/antd.min.css'
-const format = "HH:mm";
+const dateRangeFormat = "YYYY-MM-DD"
+const timeRangeFormat = "HH:mm";
 const defaultMinuteStep = 30;
 
 //RangePicker
@@ -85,7 +86,7 @@ function Home() {
                                     setTimeRange([e[0],e[1]])
                                     console.log(e[0].endOf("hours"), e[1].endOf("hours"))
                                 }}
-                                format={format}
+                                format={timeRangeFormat}
                                 minuteStep={defaultMinuteStep}
                                 defaultValue={timeRange}
                                 required
@@ -106,27 +107,27 @@ function Home() {
     );
 
     function sendRoomRequest() {
-        console.log(roomName, dateRange, timeRange)
-        const srcUrl = "http://ec2-43-200-23-249.ap-northeast-2.compute.amazonaws.com:8080/room/"
-    
+        // console.log(roomName, dateRange, timeRange)
+        const srcUrl = process.env.REACT_APP_API_URL + 'room/'
+
         let sendFlag = (roomName != undefined) && (dateRange != undefined)
         if (!sendFlag) {
-            alert("전송실패!")
+            alert("방제목과 기한을 설정해주세요")
         }
         else {
             axios({
                 method: 'post',
                 url: srcUrl,
                 data: {
-                    "title": "test",
-                    "startDay": "2022-10-12",
-                    "endDay": "2022-10-14",
-                    "startTime": "10:00:00",
-                    "endTime": "12:00:00"
+                    "title": roomName,
+                    "startDay": dateRange[0].format(dateRangeFormat),
+                    "endDay": dateRange[1].format(dateRangeFormat),
+                    "startTime": timeRange[0].format(timeRangeFormat),
+                    "endTime": timeRange[0].format(timeRangeFormat),
                 }
             })
                 .then((result) => {
-                    console.log(result.data)
+                    // console.log(result.data)
                     navigate(`/room/`+result.data);
                 })
                 .catch(() => { console.log('전송 실패') })

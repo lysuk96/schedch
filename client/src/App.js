@@ -10,7 +10,7 @@ function App() {
     return (
         <Routes>
             <Route path = "/" element= {<Home/>}/>
-            <Route path = "/room" element={<Room/>}/>
+            <Route exact path = "/room/:roomId" element={<Room/>}/>
             <Route path = "/scheduler_test" element={<SchedulerTest/>}/>
         </Routes>
     );
