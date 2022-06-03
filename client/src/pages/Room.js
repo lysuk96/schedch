@@ -26,6 +26,7 @@ function Room() {
     let start = true
     
     let {roomId} = useParams() 
+    let {userId} = useParams()
     let srcUrl = process.env.REACT_APP_API_URL + 'room/' + roomId
 
     // 방 정보 가져오기
@@ -51,12 +52,13 @@ function Room() {
         <div className="Room">
             <RoomCardWrapper>
                 {(
-                    loader ? <Loader type="spin" color="black" message="멤버 정보를 불러오는 중입니다" ></Loader> :
+                    loader ? <Loader type="spin" color="black" message="스케줄 정보를 불러오는 중입니다" ></Loader> :
                         roomInfo != null
                             ?
                             (
                                 <CardHeader>
                                     <CardHeading>{roomInfo.title}</CardHeading>
+                                    <h6>내이름 : {userId}</h6>
                                 </CardHeader>
 
                             )

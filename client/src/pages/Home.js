@@ -20,9 +20,6 @@ import { DatePicker } from "antd";
 //css
 import "./css/home.css";
 
-//dummy
-import PastDummy from "../api/dummy/PastDummy";
-
 //TimePicker (나중에 공부해서 component화 할 것)
 import {TimePicker} from "antd"
 import 'antd/dist/antd.min.css'
