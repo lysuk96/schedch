@@ -10,11 +10,15 @@ let toggle = [false, false, false, false, false, false, false];
 function SchedulerTest() {
 
   // Dummy arguments
-  const startDate = new Date('August 01, 2022');
-  const endDate = new Date('August 15, 2022');
+  const startDate = new Date('2022-08-01');
+  const endDate = new Date('2022-08-31');
   const startTime = 12;
-  const endTime = 16;
+  const endTime = 18;
 
+  return MakeScheduler(startDate, endDate, startTime, endTime)
+}
+
+function MakeScheduler(startDate, endDate, startTime, endTime) {
   // mon: 0, tue: 1, ...
   const startDay = (startDate.getDay() + 6) % 7;
   const endDay = (endDate.getDay() + 6) % 7;
@@ -35,8 +39,55 @@ function SchedulerTest() {
     tableState.push([...initCells]);
   }
 
+  var currDate = startDate; // Object.assign({}, startDate);
+  var tableList = [];
+  var tempList = [];
+  while (currDate.getTime() <= endDate.getTime()) {
+      if (currDate.getDay() === 1 && tempList.length > 0) {
+          tableList.push(tempList);
+          tempList = [currDate];
+      } else {
+          tempList.push(currDate);
+      }
+      currDate = new Date(currDate.getTime() + (24*60*60*1000))
+  }
+  if (tempList.length > 0) {
+      tableList.push(tempList);
+  }
+  var validDaysList = []
+  var weeks = tableList.map(
+    days => {
+      var firstDay = days[0].getDay();
+      var monday = new Date(days[0].getTime() - (firstDay - (firstDay == 0 ? -6 : 1)) * (24*60*60*1000) );
+      var validDays = [ false, false, false, false, false, false, false ];
+      validDaysList.push(validDays);
+      days.forEach (
+        day => validDays[(day.getDay() + 6) % 7] = true
+      );
+      return [
+        monday,
+        new Date(monday.getTime() + (24*60*60*1000) * 1),
+        new Date(monday.getTime() + (24*60*60*1000) * 2),
+        new Date(monday.getTime() + (24*60*60*1000) * 3),
+        new Date(monday.getTime() + (24*60*60*1000) * 4),
+        new Date(monday.getTime() + (24*60*60*1000) * 5),
+        new Date(monday.getTime() + (24*60*60*1000) * 6),
+      ]
+    }
+  )
+  var times = [...Array((endTime - startTime)*2).keys()].map(i => i + startTime * 2)
+
   const [currTot, changeCurrTot] = useState({ cellsTot: tableState});
   const [currIdx, changeCurrIdx] = useState({ index: 0});
+  const [monText, changeMonText] = useState({ text: weeks[0][0].toLocaleDateString()});
+  const [tueText, changeTueText] = useState({ text: weeks[0][1].toLocaleDateString()});
+  const [wedText, changeWedText] = useState({ text: weeks[0][2].toLocaleDateString()});
+  const [thuText, changeThuText] = useState({ text: weeks[0][3].toLocaleDateString()});
+  const [friText, changeFriText] = useState({ text: weeks[0][4].toLocaleDateString()});
+  const [satText, changeSatText] = useState({ text: weeks[0][5].toLocaleDateString()});
+  const [sunText, changeSunText] = useState({ text: weeks[0][6].toLocaleDateString()});
+  const dayTexts = [monText, tueText, wedText, thuText, friText, satText, sunText];
+  const dayChanges = [changeMonText, changeTueText, changeWedText, changeThuText, changeFriText, changeSatText, changeSunText];
 
   function handleChange(cells) {
     changeCurr({ cells });
@@ -45,23 +96,64 @@ function SchedulerTest() {
 
   const handleClick = () => {
     // changeCurr({ cells });
-    console.log(currTot.cellsTot);
+    var temp = [...currTot.cellsTot];
+    temp[currIdx.index] = [...curr.cells];
+    // console.log(temp);
+    var apiRequestBody = [];
+    for (var i = 0; i < weeks.length; i++) {
+      for (var j = 0; j < 7; j++) {
+        function leftPad(value) {
+          if (value >= 10) {
+            return value;
+          }
+          return `0${value}`
+        }
+        var scheduledDate = [
+          weeks[i][j].getFullYear(),
+          leftPad(weeks[i][j].getMonth() + 1),
+          leftPad(weeks[i][j].getDate())
+        ].join("-");
+        var scheduledTimeList = []
+        for (var k = 0; k < (endTime - startTime)*2; k++) {
+          if (temp[i][k+2][j+1]) {
+            scheduledTimeList.push(startTime * 2 + k)
+          }
+        }
+        apiRequestBody.push({
+          scheduledDate: scheduledDate,
+          scheduledTimeList: scheduledTimeList
+        })
+      }
+    }
+    console.log(apiRequestBody);
   };
 
   const handleLeft = () => {
     if (currIdx.index > 0) {
-      console.log(currTot.cellsTot);
+      // console.log(currTot.cellsTot);
       var temp = [...currTot.cellsTot];
       temp[currIdx.index] = [...curr.cells];
       changeCurrTot({cellsTot: temp});
       changeCurr({ cells: [...temp[currIdx.index-1]] });
-      changeCurrIdx({index: currIdx.index - 1})
+      changeCurrIdx({index: currIdx.index - 1});
+      var currWeek = weeks[currIdx.index];
+      console.log(currWeek);
+      dayChanges.forEach(
+        (changeText, idx) => changeText({ text: currWeek[idx].toLocaleDateString()})
+      )
     }
   }
 
   const handleRight = () => {
     if (currIdx.index < tableState.length - 1) {
-      console.log(currTot.cellsTot);
+      // console.log(currTot.cellsTot);
+      var currWeek = weeks[currIdx.index+1];
+      dayChanges.forEach(
+        (changeText, idx) =>{
+          console.log(currWeek[idx].toLocaleDateString())
+          changeText({ text: currWeek[idx].toLocaleDateString()})
+        }
+      )
       var temp = [...currTot.cellsTot]
       temp[currIdx.index] = [...curr.cells];
       changeCurrTot({cellsTot: temp});
@@ -70,7 +162,47 @@ function SchedulerTest() {
     }
   }
 
-  return makeTables(curr, handleChange, handleClick, handleLeft, handleRight, startTime * 2, (endTime-startTime)*2, startDay, dateDiff);
+  return (
+      <div>
+        <TableDragSelect value={curr.cells} onChange={handleChange}>
+          <tr>
+            <td disabled />
+            {
+              dayTexts.map(
+                text => <td disabled>{text.text}</td>
+              )
+            }
+          </tr>
+          <tr>
+            <td disabled />
+            <td disabled>Mon</td>
+            <td disabled>Tue</td>
+            <td disabled>Wed</td>
+            <td disabled>Thu</td>
+            <td disabled>Fri</td>
+            <td disabled>Sat</td>
+            <td disabled>Sun</td>
+          </tr>
+          {
+            times.map( t =>
+              <tr>
+                <td disabled>{hours[t].time}</td>
+                <td className="mon" />
+                <td className="tue" />
+                <td className="wed" />
+                <td className="thu" />
+                <td className="fri" />
+                <td className="sat" />
+                <td className="sun" />
+              </tr>
+            )
+          }
+        </TableDragSelect>
+        <button onClick={handleClick}>Submit</button>
+        <button onClick={handleLeft}>Prev</button>
+        <button onClick={handleRight}>Next</button>
+      </div>
+  );
 }
 
 export default SchedulerTest
