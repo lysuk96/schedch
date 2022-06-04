@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, Route, Routes } from 'react-router-dom';
 import Select from 'react-select';
+import moment from 'moment'
+import axios from 'axios'
 
 //component
 import {
@@ -13,28 +15,33 @@ import {
     CardLink,
     CardInput
 } from "../components/Card";
+import { DatePicker } from "antd";
 
 //css
 import "./css/home.css";
 
-//dummy
-import PastDummy from "../api/dummy/PastDummy";
-
 //TimePicker (나중에 공부해서 component화 할 것)
 import {TimePicker} from "antd"
 import 'antd/dist/antd.min.css'
-const format = "HH:mm";
-const defaultHour = ["09:00", "22:00"];
+const dateRangeFormat = "YYYY-MM-DD"
+const timeRangeFormat = "HH:mm";
 const defaultMinuteStep = 30;
 
+//RangePicker
+const {RangePicker} = DatePicker
 
 
+const disabledDate = (current) => {
+    // Can not select days before today
+    return current < moment().endOf('day');
+  };
 
-function Home() {
-    let navigate = useNavigate()
-    
-    const [past0, setPast0] = useState(PastDummy[0])
-    const [past1, setPast1] = useState(PastDummy[0])
+function Home() {    
+    let navigate = useNavigate();
+
+    const [roomName, setRoomName] = useState()
+    const [dateRange, setDateRange] = useState()
+    const [timeRange, setTimeRange] = useState([moment('09:00', 'HH:mm'),moment('22:00', 'HH:mm')])
 
     return (
         <div class="Home">
@@ -45,19 +52,42 @@ function Home() {
 
                 <CardBody>
                     <CardFieldset>
-                        <CardInput placeholder="약속 이름" type="text" required />
+                        <CardInput
+                            placeholder="약속 이름"
+                            type="text"
+                            maxLength={20}
+                            onChange={(e)=>{setRoomName(e.target.value)}}
+                            required
+                        />
                     </CardFieldset>
 
                     <CardFieldset>
                         <div style={{ marginTop: "10px" }}>
-                            <h6>약속 주차 설정</h6>
+                            <h6>약속 날짜 설정</h6>
+                            <RangePicker
+                                onChange={(e)=> {
+                                    setDateRange([e[0],e[1]])
+                                    console.log(e[0].endOf("day"), e[1].endOf("day"))
+                                }}
+                                disabledDate={disabledDate}
+                                required
+                            />
                         </div>
                     </CardFieldset>
 
                     <CardFieldset>
                         <div style={{ marginTop: "10px" }}>
                             <h6>약속 시간대 설정</h6>
-                            <TimePicker.RangePicker status="error" format={format} minuteStep={defaultMinuteStep} defaultPickerValue={defaultHour}/>
+                            <TimePicker.RangePicker
+                                onChange={(e)=> {
+                                    setTimeRange([e[0],e[1]])
+                                    console.log(e[0].endOf("hours"), e[1].endOf("hours"))
+                                }}
+                                format={timeRangeFormat}
+                                minuteStep={defaultMinuteStep}
+                                defaultValue={timeRange}
+                                required
+                            />
                         </div>
                     </CardFieldset>
 
@@ -65,13 +95,42 @@ function Home() {
                         <div style={{ marginTop: "10px" }}></div>
                         <CardButton type="button"
                             onClick={() => {
-                                navigate(`/room`);
+                                sendRoomRequest()
                             }}>방 만들기</CardButton>
                     </CardFieldset>
                 </CardBody>
             </HomeCardWrapper>
         </div>
     );
+
+    function sendRoomRequest() {
+        // console.log(roomName, dateRange, timeRange)
+        const srcUrl = process.env.REACT_APP_API_URL + 'room/'
+
+        let sendFlag = (roomName != undefined) && (dateRange != undefined)
+        if (!sendFlag) {
+            alert("방제목과 기한을 설정해주세요")
+        }
+        else {
+            axios({
+                method: 'post',
+                url: srcUrl,
+                data: {
+                    "title": roomName,
+                    "startDay": dateRange[0].format(dateRangeFormat),
+                    "endDay": dateRange[1].format(dateRangeFormat),
+                    "startTime": timeRange[0].format(timeRangeFormat),
+                    "endTime": timeRange[0].format(timeRangeFormat),
+                }
+            })
+                .then((result) => {
+                    // console.log(result.data)
+                    navigate(`/room/`+result.data);
+                })
+                .catch(() => { console.log('전송 실패') })
+        }
+    }
 }
+
 
 export default Home;

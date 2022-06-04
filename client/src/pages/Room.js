@@ -1,12 +1,17 @@
-import React,{useState} from "react";
+import React,{useEffect, useState} from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {InputGroup, Nav, Button} from 'react-bootstrap'
+import axios from 'axios'
+import Loader from '../components/Loader'
 
 //component
 import {
     RoomCardWrapper,
     CardBody,
+    CardHeader,
+    CardHeading
 } from "../components/Card";
+import SchedulerTest from "./SchedulerTest";
 
 //css
 import "./css/room.css"
@@ -14,10 +19,52 @@ import "./css/room.css"
 function Room() {
     let [tab, setTab] = useState(0)
     const navigate = useNavigate()
+    
+    let [roomInfo, setRoomInfo] = useState(null)
+    let [loader, setLoader] = useState(true)
+    let [totalSched, setTotalSched] = useState(null)
+    let start = true
+    
+    let {roomId} = useParams() 
+    let {userId} = useParams()
+    let srcUrl = process.env.REACT_APP_API_URL + 'room/' + roomId
+
+    // 방 정보 가져오기
+    useEffect (()=>{
+        axios.get(srcUrl)
+        .then((result) => { 
+            // console.log(result.data);
+            setLoader(false);
+            setRoomInfo(result.data);
+        })
+    },[start]);
+
+    // 전체 스케줄 가져오기
+    useEffect (()=>{
+        axios.get(srcUrl + '/schedule')
+        .then((result) => { 
+            // console.log(result.data);
+            setTotalSched(result.data);
+        })
+    },[start]);
 
     return(
         <div className="Room">
             <RoomCardWrapper>
+                {(
+                    loader ? <Loader type="spin" color="black" message="스케줄 정보를 불러오는 중입니다" ></Loader> :
+                        roomInfo != null
+                            ?
+                            (
+                                <CardHeader>
+                                    <CardHeading>{roomInfo.title}</CardHeading>
+                                    <h6>내이름 : {userId}</h6>
+                                </CardHeader>
+
+                            )
+                            : null
+                )
+                }
                 <CardBody>
                     <div class="schedular">
                         <Nav className="mt-5" variant="tabs" defaultActiveKey="link-0">
@@ -49,11 +96,11 @@ function TabContent(props) {
 
     if(props.tab == 0){
         return (
-            <div/>
+            <SchedulerTest></SchedulerTest>
         )
     } else if(props.tab ==1) {
         return(
-            <div></div>
+            <SchedulerTest/>
         )
     }
 }
