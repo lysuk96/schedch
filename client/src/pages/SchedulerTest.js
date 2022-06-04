@@ -7,13 +7,22 @@ import makeTables from "../components/TableList"
 
 
 let toggle = [false, false, false, false, false, false, false];
-function SchedulerTest() {
+function SchedulerTest(props) {
 
-  // Dummy arguments
-  const startDate = new Date('2022-08-01');
-  const endDate = new Date('2022-08-31');
-  const startTime = 12;
-  const endTime = 18;
+  var startDate, endDate, startTime, endTime;
+  if (props.roomInfo == undefined) {
+    // Dummy args
+    startDate = new Date('2022-08-01');
+    endDate = new Date('2022-08-31');
+    startTime = 12;
+    endTime = 18;
+  } else {
+    // props args
+    startDate = new Date(props.roomInfo.startDay)
+    endDate = new Date(props.roomInfo.endDay)
+    startTime = props.roomInfo.startTime
+    endTime = props.roomInfo.endTime
+  }
 
   return MakeScheduler(startDate, endDate, startTime, endTime)
 }

@@ -55,7 +55,7 @@ function Login() {
                             ?
                             (
                                 <div>
-                                    <h6>약속이름 : {roomInfo.title}</h6>
+                                    <h6>약속명 : {roomInfo.title}</h6>
                                     <h6>{roomInfo.startDay} ~ {roomInfo.endDay}</h6>
                                 </div>
 

@@ -23,8 +23,10 @@ import "./css/home.css";
 //TimePicker (나중에 공부해서 component화 할 것)
 import {TimePicker} from "antd"
 import 'antd/dist/antd.min.css'
+
 const dateRangeFormat = "YYYY-MM-DD"
 const timeRangeFormat = "HH:mm";
+const googleTimeRangeFormat = "HH:mm:ss";
 const defaultMinuteStep = 30;
 
 //RangePicker
@@ -41,7 +43,7 @@ function Home() {
 
     const [roomName, setRoomName] = useState()
     const [dateRange, setDateRange] = useState()
-    const [timeRange, setTimeRange] = useState([moment('09:00', 'HH:mm'),moment('22:00', 'HH:mm')])
+    const [timeRange, setTimeRange] = useState()
 
     return (
         <div class="Home">
@@ -67,7 +69,7 @@ function Home() {
                             <RangePicker
                                 onChange={(e)=> {
                                     setDateRange([e[0],e[1]])
-                                    console.log(e[0].endOf("day"), e[1].endOf("day"))
+                                    // console.log(e[0].endOf("day"), e[1].endOf("day"))
                                 }}
                                 disabledDate={disabledDate}
                                 required
@@ -81,7 +83,7 @@ function Home() {
                             <TimePicker.RangePicker
                                 onChange={(e)=> {
                                     setTimeRange([e[0],e[1]])
-                                    console.log(e[0].endOf("hours"), e[1].endOf("hours"))
+                                    // console.log(e[0].format(timeRangeFormat), e[1].format(timeRangeFormat))
                                 }}
                                 format={timeRangeFormat}
                                 minuteStep={defaultMinuteStep}
@@ -107,9 +109,9 @@ function Home() {
         // console.log(roomName, dateRange, timeRange)
         const srcUrl = process.env.REACT_APP_API_URL + 'room/'
 
-        let sendFlag = (roomName != undefined) && (dateRange != undefined)
+        let sendFlag = (roomName != undefined) && (dateRange != undefined) && (timeRange != undefined)
         if (!sendFlag) {
-            alert("방제목과 기한을 설정해주세요")
+            alert("방제목과 약속 날짜를 설정해주세요")
         }
         else {
             axios({
@@ -119,8 +121,8 @@ function Home() {
                     "title": roomName,
                     "startDay": dateRange[0].format(dateRangeFormat),
                     "endDay": dateRange[1].format(dateRangeFormat),
-                    "startTime": timeRange[0].format(timeRangeFormat),
-                    "endTime": timeRange[0].format(timeRangeFormat),
+                    "startTime": timeRange[0].format(googleTimeRangeFormat),
+                    "endTime": timeRange[1].format(googleTimeRangeFormat),
                 }
             })
                 .then((result) => {
