@@ -137,7 +137,6 @@ function MakeScheduler(startDate, endDate, startTime, endTime) {
       changeCurr({ cells: [...temp[currIdx.index-1]] });
       changeCurrIdx({index: currIdx.index - 1});
       var currWeek = weeks[currIdx.index];
-      console.log(currWeek);
       dayChanges.forEach(
         (changeText, idx) => changeText({ text: currWeek[idx].toLocaleDateString()})
       )
