@@ -4,6 +4,8 @@
   },
   "dependencies": {
     "antd": "^4.20.7",
+    "axios": "^0.27.2",
+    "react-loading": "^2.0.3",
     "react-table-drag-select": "^0.3.1"
   }
 }
