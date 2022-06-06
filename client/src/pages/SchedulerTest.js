@@ -29,6 +29,8 @@ function SchedulerTest(props) {
     endDate = new Date(props.roomInfo.endDay)
     startTime = props.roomInfo.startTime
     endTime = props.roomInfo.endTime
+    isGroup = props.isGroup
+    groupSchedule = props.room
   }
 
   return MakeScheduler(startDate, endDate, startTime, endTime, isGroup, groupSchedule)
@@ -96,23 +98,25 @@ function MakeScheduler(startDate, endDate, startTime, endTime, isGroup, groupSch
     }
   )
   var times = [...Array((endTime - startTime)*2).keys()].map(i => i + startTime * 2)
-
-  const groupBias = ((new Date(groupSchedule[0].scheduledDate)).getTime() - startDateTime) / (1000 * 3600 * 24);
-  groupSchedule.forEach(
-    (obj, idx) => {
-      var diff = groupBias + idx;
-      var weekIdx = Math.floor(diff / 7);
-      var dayIdx = diff % 7;
-      console.log(diff);
-      console.log(weekIdx);
-      console.log(dayIdx);
-      obj.scheduledTimeList.forEach(
-        timeIdx => {
-          groupState[weekIdx][timeIdx-startTime*2][dayIdx] = true;
-        }
-      )
-    }
-  )
+  if (groupSchedule) {
+    const groupBias = ((new Date(groupSchedule[0].scheduledDate)).getTime() - startDateTime) / (1000 * 3600 * 24);
+    groupSchedule.forEach(
+      (obj, idx) => {
+        var diff = groupBias + idx;
+        var weekIdx = Math.floor(diff / 7);
+        var dayIdx = diff % 7;
+        console.log(diff);
+        console.log(weekIdx);
+        console.log(dayIdx);
+        obj.scheduledTimeList.forEach(
+          timeIdx => {
+            groupState[weekIdx][timeIdx-startTime*2][dayIdx] = true;
+          }
+        )
+      }
+    )
+  }
+  
 
 
   const [currTot, changeCurrTot] = useState({ cellsTot: tableState});

@@ -22,7 +22,7 @@ function Room() {
     
     let [roomInfo, setRoomInfo] = useState(null)
     let [loader, setLoader] = useState(true)
-    let [totalSched, setTotalSched] = useState(null)
+    let [groupSchedule, setGroupSchedule] = useState(null)
     let start = true
     
     let {roomId} = useParams() 
@@ -44,7 +44,7 @@ function Room() {
         axios.get(srcUrl + '/schedule')
         .then((result) => { 
             // console.log(result.data);
-            setTotalSched(result.data);
+            setGroupSchedule(result.data);
         })
     },[start]);
 
@@ -59,6 +59,7 @@ function Room() {
                             <RoomCardWrapper>
                                 <CardHeader>
                                     <CardHeading>{roomInfo.title}</CardHeading>
+                                    <h6>{roomInfo.startDay}~{roomInfo.endDay}</h6>
                                     <h6>{userId}님의 스케줄러</h6>
                                 </CardHeader>
                                 <CardBody>
@@ -74,7 +75,7 @@ function Room() {
                                         <TabContent
                                             tab={tab}
                                             roomInfo={roomInfo}
-                                            totalSched={totalSched}
+                                            groupSchedule={groupSchedule}
                                         ></TabContent>
                                     </div>
 
@@ -105,13 +106,16 @@ function TabContent(props) {
         return (
             <SchedulerTest
             roomInfo={props.roomInfo}
+            isGroup={false}
+            groupSchedule={props.groupSchedule}
             />
         )
     } else if(props.tab ==1) {
         return(
             <SchedulerTest
             roomInfo={props.roomInfo}
-            totalSched={props.totalSched}
+            isGroup={true}
+            groupSchedule={props.groupSchedule}
             />
         )
     }
