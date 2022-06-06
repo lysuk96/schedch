@@ -205,7 +205,9 @@ class Cell extends React.Component {
   // cells
   shouldComponentUpdate = (nextProps) =>
     this.props.beingSelected !== nextProps.beingSelected ||
-    this.props.selected !== nextProps.selected;
+    this.props.selected !== nextProps.selected ||
+    this.props.text !== nextProps.text ||
+    this.props.disabled !== nextProps.disabled;
 
   componentDidMount = () => {
     // We need to call addEventListener ourselves so that we can pass

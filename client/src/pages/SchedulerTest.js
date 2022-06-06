@@ -9,13 +9,20 @@ import makeTables from "../components/TableList"
 let toggle = [false, false, false, false, false, false, false];
 function SchedulerTest(props) {
 
-  var startDate, endDate, startTime, endTime;
+  var startDate, endDate, startTime, endTime, isGroup, groupSchedule;
   if (props.roomInfo == undefined) {
     // Dummy args
     startDate = new Date('2022-08-01');
     endDate = new Date('2022-08-31');
     startTime = 12;
     endTime = 18;
+    isGroup = false;
+    groupSchedule = [
+      {
+        scheduledDate: "2022-08-01",
+        scheduledTimeList: [25, 26, 27, 28, 29]
+      }
+    ]
   } else {
     // props args
     startDate = new Date(props.roomInfo.startDay)
@@ -24,11 +31,12 @@ function SchedulerTest(props) {
     endTime = props.roomInfo.endTime
   }
 
-  return MakeScheduler(startDate, endDate, startTime, endTime)
+  return MakeScheduler(startDate, endDate, startTime, endTime, isGroup, groupSchedule)
 }
 
-function MakeScheduler(startDate, endDate, startTime, endTime) {
+function MakeScheduler(startDate, endDate, startTime, endTime, isGroup, groupSchedule) {
   // mon: 0, tue: 1, ...
+  const startDateTime = startDate.getTime();
   const startDay = (startDate.getDay() + 6) % 7;
   const endDay = (endDate.getDay() + 6) % 7;
   const dateDiff = (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24)
@@ -39,14 +47,17 @@ function MakeScheduler(startDate, endDate, startTime, endTime) {
     initCells.push([false, false, false, false, false, false, false])
   }
 
-
   const [curr, changeCurr] = useState({
     cells: initCells  });
 
   var tableState = [];
+  var groupState = [];
   for (temp = 0; temp < parseInt((startDay + dateDiff - 1) / 7+1); temp++) {
     tableState.push([...initCells]);
+    groupState.push([...initCells]);
   }
+  tableState = JSON.parse(JSON.stringify(tableState));
+  groupState = JSON.parse(JSON.stringify(groupState));
 
   var currDate = startDate; // Object.assign({}, startDate);
   var tableList = [];
@@ -69,10 +80,10 @@ function MakeScheduler(startDate, endDate, startTime, endTime) {
       var firstDay = days[0].getDay();
       var monday = new Date(days[0].getTime() - (firstDay - (firstDay == 0 ? -6 : 1)) * (24*60*60*1000) );
       var validDays = [ false, false, false, false, false, false, false ];
-      validDaysList.push(validDays);
       days.forEach (
         day => validDays[(day.getDay() + 6) % 7] = true
       );
+      validDaysList.push(validDays);
       return [
         monday,
         new Date(monday.getTime() + (24*60*60*1000) * 1),
@@ -85,6 +96,24 @@ function MakeScheduler(startDate, endDate, startTime, endTime) {
     }
   )
   var times = [...Array((endTime - startTime)*2).keys()].map(i => i + startTime * 2)
+
+  const groupBias = ((new Date(groupSchedule[0].scheduledDate)).getTime() - startDateTime) / (1000 * 3600 * 24);
+  groupSchedule.forEach(
+    (obj, idx) => {
+      var diff = groupBias + idx;
+      var weekIdx = Math.floor(diff / 7);
+      var dayIdx = diff % 7;
+      console.log(diff);
+      console.log(weekIdx);
+      console.log(dayIdx);
+      obj.scheduledTimeList.forEach(
+        timeIdx => {
+          groupState[weekIdx][timeIdx-startTime*2][dayIdx] = true;
+        }
+      )
+    }
+  )
+
 
   const [currTot, changeCurrTot] = useState({ cellsTot: tableState});
   const [currIdx, changeCurrIdx] = useState({ index: 0});
@@ -104,10 +133,8 @@ function MakeScheduler(startDate, endDate, startTime, endTime) {
   }
 
   const handleClick = () => {
-    // changeCurr({ cells });
     var temp = [...currTot.cellsTot];
     temp[currIdx.index] = [...curr.cells];
-    // console.log(temp);
     var apiRequestBody = [];
     for (var i = 0; i < weeks.length; i++) {
       for (var j = 0; j < 7; j++) {
@@ -139,13 +166,12 @@ function MakeScheduler(startDate, endDate, startTime, endTime) {
 
   const handleLeft = () => {
     if (currIdx.index > 0) {
-      // console.log(currTot.cellsTot);
       var temp = [...currTot.cellsTot];
       temp[currIdx.index] = [...curr.cells];
       changeCurrTot({cellsTot: temp});
       changeCurr({ cells: [...temp[currIdx.index-1]] });
       changeCurrIdx({index: currIdx.index - 1});
-      var currWeek = weeks[currIdx.index];
+      var currWeek = weeks[currIdx.index-1];
       dayChanges.forEach(
         (changeText, idx) => changeText({ text: currWeek[idx].toLocaleDateString()})
       )
@@ -154,7 +180,6 @@ function MakeScheduler(startDate, endDate, startTime, endTime) {
 
   const handleRight = () => {
     if (currIdx.index < tableState.length - 1) {
-      // console.log(currTot.cellsTot);
       var currWeek = weeks[currIdx.index+1];
       dayChanges.forEach(
         (changeText, idx) =>{
@@ -169,15 +194,16 @@ function MakeScheduler(startDate, endDate, startTime, endTime) {
       changeCurrIdx({index: currIdx.index + 1})
     }
   }
+  console.log(groupState);
 
   return (
       <div>
-        <TableDragSelect value={curr.cells} onChange={handleChange}>
+        <TableDragSelect value={curr.cells} onChange={handleChange} days={""}>
           <tr>
             <td disabled />
             {
               dayTexts.map(
-                text => <td disabled>{text.text}</td>
+                text => <td disabled text={text.text}>{text.text}</td>
               )
             }
           </tr>
@@ -195,13 +221,13 @@ function MakeScheduler(startDate, endDate, startTime, endTime) {
             times.map( t =>
               <tr>
                 <td disabled>{hours[t].time}</td>
-                <td className="mon" />
-                <td className="tue" />
-                <td className="wed" />
-                <td className="thu" />
-                <td className="fri" />
-                <td className="sat" />
-                <td className="sun" />
+                <td disabled={!validDaysList[currIdx.index][0] || groupState[currIdx.index][t-startTime*2][0]} className="mon" />
+                <td disabled={!validDaysList[currIdx.index][1] || groupState[currIdx.index][t-startTime*2][1]} className="tue" />
+                <td disabled={!validDaysList[currIdx.index][2] || groupState[currIdx.index][t-startTime*2][2]} className="wed" />
+                <td disabled={!validDaysList[currIdx.index][3] || groupState[currIdx.index][t-startTime*2][3]} className="thu" />
+                <td disabled={!validDaysList[currIdx.index][4] || groupState[currIdx.index][t-startTime*2][4]} className="fri" />
+                <td disabled={!validDaysList[currIdx.index][5] || groupState[currIdx.index][t-startTime*2][5]} className="sat" />
+                <td disabled={!validDaysList[currIdx.index][6] || groupState[currIdx.index][t-startTime*2][6]} className="sun" />
               </tr>
             )
           }
