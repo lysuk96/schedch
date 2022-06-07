@@ -18,9 +18,9 @@ const SchedulerTest = forwardRef((props, ref) => {
   var startDate, endDate, startTime, endTime, isGroup, groupSchedule;
   if (props.roomInfo == undefined) {
     // Dummy args
-    startDate = new Date('2022-08-01');
-    endDate = new Date('2022-08-31');
-    startTime = 12;
+    startDate = new Date('2022-06-01');
+    endDate = new Date('2022-06-31');
+    startTime = 1;
     endTime = 18;
     isGroup = false;
     groupSchedule = [
@@ -47,7 +47,7 @@ const SchedulerTest = forwardRef((props, ref) => {
 
   var initCells = [];
   var temp;
-  for (temp = 0; temp < (endTime - startTime + 1) * 2; temp++) {
+  for (temp = 0; temp < (endTime - startTime + 2); temp++) {
     initCells.push([false, false, false, false, false, false, false])
   }
 
@@ -99,7 +99,7 @@ const SchedulerTest = forwardRef((props, ref) => {
       ]
     }
   )
-  var times = [...Array((endTime - startTime)*2).keys()].map(i => i + startTime * 2)
+  var times = [...Array((endTime - startTime)).keys()].map(i => i + startTime)
   if (groupSchedule) {
     const groupBias = ((new Date(groupSchedule[0].scheduledDate)).getTime() - startDateTime) / (1000 * 3600 * 24);
     groupSchedule.forEach(
@@ -112,7 +112,7 @@ const SchedulerTest = forwardRef((props, ref) => {
         console.log(dayIdx);
         obj.scheduledTimeList.forEach(
           timeIdx => {
-            groupState[weekIdx][timeIdx-startTime*2][dayIdx] = true;
+            groupState[weekIdx][timeIdx-startTime][dayIdx] = true;
           }
         )
       }
@@ -156,9 +156,9 @@ const SchedulerTest = forwardRef((props, ref) => {
           leftPad(weeks[i][j].getDate())
         ].join("-");
         var scheduledTimeList = []
-        for (var k = 0; k < (endTime - startTime)*2; k++) {
+        for (var k = 0; k < (endTime - startTime); k++) {
           if (temp[i][k+2][j+1]) {
-            scheduledTimeList.push(startTime * 2 + k)
+            scheduledTimeList.push(startTime + k)
           }
         }
         apiRequestBody.push({
@@ -228,13 +228,13 @@ const SchedulerTest = forwardRef((props, ref) => {
             times.map( t =>
               <tr>
                 <td disabled>{hours[t].time}</td>
-                <td disabled={!validDaysList[currIdx.index][0] || groupState[currIdx.index][t-startTime*2][0]} className="mon" />
-                <td disabled={!validDaysList[currIdx.index][1] || groupState[currIdx.index][t-startTime*2][1]} className="tue" />
-                <td disabled={!validDaysList[currIdx.index][2] || groupState[currIdx.index][t-startTime*2][2]} className="wed" />
-                <td disabled={!validDaysList[currIdx.index][3] || groupState[currIdx.index][t-startTime*2][3]} className="thu" />
-                <td disabled={!validDaysList[currIdx.index][4] || groupState[currIdx.index][t-startTime*2][4]} className="fri" />
-                <td disabled={!validDaysList[currIdx.index][5] || groupState[currIdx.index][t-startTime*2][5]} className="sat" />
-                <td disabled={!validDaysList[currIdx.index][6] || groupState[currIdx.index][t-startTime*2][6]} className="sun" />
+                <td disabled={!validDaysList[currIdx.index][0] || groupState[currIdx.index][t-startTime][0]} className="mon" />
+                <td disabled={!validDaysList[currIdx.index][1] || groupState[currIdx.index][t-startTime][1]} className="tue" />
+                <td disabled={!validDaysList[currIdx.index][2] || groupState[currIdx.index][t-startTime][2]} className="wed" />
+                <td disabled={!validDaysList[currIdx.index][3] || groupState[currIdx.index][t-startTime][3]} className="thu" />
+                <td disabled={!validDaysList[currIdx.index][4] || groupState[currIdx.index][t-startTime][4]} className="fri" />
+                <td disabled={!validDaysList[currIdx.index][5] || groupState[currIdx.index][t-startTime][5]} className="sat" />
+                <td disabled={!validDaysList[currIdx.index][6] || groupState[currIdx.index][t-startTime][6]} className="sun" />
               </tr>
             )
           }
