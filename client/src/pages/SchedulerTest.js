@@ -19,10 +19,102 @@ function SchedulerTest(props) {
     isGroup = false;
     groupSchedule = [
       {
-        scheduledDate: "2022-08-01",
-        scheduledTimeList: [25, 26, 27, 28, 29]
+          "scheduledDate": "2022-06-15",
+          "scheduledTimeList": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8
+          ]
+      },
+      {
+          "scheduledDate": "2022-06-14",
+          "scheduledTimeList": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8
+          ]
+      },
+      {
+          "scheduledDate": "2022-06-13",
+          "scheduledTimeList": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8
+          ]
+      },
+      {
+          "scheduledDate": "2022-06-12",
+          "scheduledTimeList": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8
+          ]
+      },
+      {
+          "scheduledDate": "2022-06-11",
+          "scheduledTimeList": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8
+          ]
+      },
+      {
+          "scheduledDate": "2022-06-10",
+          "scheduledTimeList": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8
+          ]
+      },
+      {
+          "scheduledDate": "2022-06-09",
+          "scheduledTimeList": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8
+          ]
+      },
+      {
+          "scheduledDate": "2022-06-16",
+          "scheduledTimeList": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8
+          ]
       }
-    ]
+  ]
   } else {
     // props args
     startDate = new Date(props.roomInfo.startDay)
@@ -30,7 +122,8 @@ function SchedulerTest(props) {
     startTime = props.roomInfo.startTime
     endTime = props.roomInfo.endTime
     isGroup = props.isGroup
-    groupSchedule = props.room
+    groupSchedule = props.groupSchedule
+    console.log(props.groupSchedule)
   }
 
   return MakeScheduler(startDate, endDate, startTime, endTime, isGroup, groupSchedule)
@@ -236,9 +329,9 @@ function MakeScheduler(startDate, endDate, startTime, endTime, isGroup, groupSch
             )
           }
         </TableDragSelect>
-        <button onClick={handleClick}>Submit</button>
-        <button onClick={handleLeft}>Prev</button>
-        <button onClick={handleRight}>Next</button>
+        <button onClick={handleClick}>제출하기</button>
+        <button onClick={handleRight}>next</button>
+        <button onClick={handleLeft}>prev</button>
       </div>
   );
 }

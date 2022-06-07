@@ -43,7 +43,7 @@ function Room() {
     useEffect (()=>{
         axios.get(srcUrl + '/schedule')
         .then((result) => { 
-            // console.log(result.data);
+            console.log(result.data);
             setGroupSchedule(result.data);
         })
     },[start]);
@@ -83,7 +83,7 @@ function Room() {
                                         <Button variant="outline-danger" style={{ marginRight: '10px', display: 'inline-block' }}
                                             onClick={() => { navigate(-1) }}>
                                             뒤로가기</Button>
-                                        <Button variant="outline-secondary" onClick={() => { alert('\n(카톡 챗봇 알림 예정)\n친구들과의 스케줄 비교 결과\n정해진 약속시간은 "2022-05-19 13:00~15:00"입니다\n확인버튼을 누르면 내 캘린더에 일정이 등록됩니다'); }}>제출하기</Button>
+                                        {/* <Button variant="outline-secondary" onClick={() => { alert('\n(카톡 챗봇 알림 예정)\n친구들과의 스케줄 비교 결과\n정해진 약속시간은 "2022-05-19 13:00~15:00"입니다\n확인버튼을 누르면 내 캘린더에 일정이 등록됩니다'); }}>제출하기</Button> */}
                                     </div>
                                 </CardBody>
                             </RoomCardWrapper>
