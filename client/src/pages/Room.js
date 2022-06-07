@@ -1,4 +1,4 @@
-import React,{useEffect, useState} from "react";
+import React,{useEffect, useState, useRef, forwardRef, useImperativeHandle} from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {InputGroup, Nav, Button} from 'react-bootstrap'
 import axios from 'axios'
@@ -29,6 +29,8 @@ function Room() {
     let {userId} = useParams()
     let srcUrl = process.env.REACT_APP_API_URL + 'room/' + roomId
 
+    let tabRef = useRef()
+
     // 방 정보 가져오기
     useEffect (()=>{
         axios.get(srcUrl)
@@ -38,7 +40,7 @@ function Room() {
             setRoomInfo(result.data);
         })
     },[start]);
-
+    
     // 전체 스케줄 가져오기
     useEffect (()=>{
         axios.get(srcUrl + '/schedule')
@@ -47,6 +49,39 @@ function Room() {
             setGroupSchedule(result.data);
         })
     },[start]);
+    
+    const TabContent= forwardRef((props, ref) => {
+        useImperativeHandle(ref, () => ({
+            testFn: () => {
+                const mySchedule = scheduleRef.current.testFn()
+                submitMySchedule(mySchedule)
+            }
+        }))
+    
+        const navigate = useNavigate();
+        let scheduleRef = useRef()
+    
+        console.log(props)
+        if(props.tab == 0){
+            return (
+                <SchedulerTest
+                ref = {scheduleRef}
+                roomInfo={props.roomInfo}
+                isGroup={false}
+                groupSchedule={props.groupSchedule}
+                />
+            )
+        } else if(props.tab ==1) {
+            return(
+                <SchedulerTest
+                ref = {scheduleRef}
+                roomInfo={props.roomInfo}
+                isGroup={true}
+                groupSchedule={props.groupSchedule}
+                />
+            )
+        }
+    })
 
     return(
         <div className="Room">
@@ -73,6 +108,7 @@ function Room() {
                                             </Nav.Item>
                                         </Nav>
                                         <TabContent
+                                            ref={tabRef}
                                             tab={tab}
                                             roomInfo={roomInfo}
                                             groupSchedule={groupSchedule}
@@ -83,7 +119,10 @@ function Room() {
                                         <Button variant="outline-danger" style={{ marginRight: '10px', display: 'inline-block' }}
                                             onClick={() => { navigate(-1) }}>
                                             뒤로가기</Button>
-                                        {/* <Button variant="outline-secondary" onClick={() => { alert('\n(카톡 챗봇 알림 예정)\n친구들과의 스케줄 비교 결과\n정해진 약속시간은 "2022-05-19 13:00~15:00"입니다\n확인버튼을 누르면 내 캘린더에 일정이 등록됩니다'); }}>제출하기</Button> */}
+                                        <Button variant="outline-secondary"
+                                        onClick={() => tabRef.current.testFn()}
+                                        // onClick={() => { alert('\n(카톡 챗봇 알림 예정)\n친구들과의 스케줄 비교 결과\n정해진 약속시간은 "2022-05-19 13:00~15:00"입니다\n확인버튼을 누르면 내 캘린더에 일정이 등록됩니다'); }}
+                                        >제출하기</Button>
                                     </div>
                                 </CardBody>
                             </RoomCardWrapper>
@@ -94,31 +133,22 @@ function Room() {
                 }
         </div>
     )
-}
 
+    function submitMySchedule(props) {
 
+        console.log(props)
+        axios({
+            method: 'post',
+            url: srcUrl + '/user/' + userId + '/schedule',
+            data: props
+        })
+            .then((result) => {
+                console.log(result.data)
+            })
+            .catch(() => { console.log('전송 실패') })
 
-function TabContent(props) {
-    const navigate = useNavigate();
-
-    console.log(props)
-    if(props.tab == 0){
-        return (
-            <SchedulerTest
-            roomInfo={props.roomInfo}
-            isGroup={false}
-            groupSchedule={props.groupSchedule}
-            />
-        )
-    } else if(props.tab ==1) {
-        return(
-            <SchedulerTest
-            roomInfo={props.roomInfo}
-            isGroup={true}
-            groupSchedule={props.groupSchedule}
-            />
-        )
     }
 }
+
 
 export default Room

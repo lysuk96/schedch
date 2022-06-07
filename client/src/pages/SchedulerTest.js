@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, forwardRef, useImperativeHandle } from "react"
 import { RoomCardWrapper, CardBody } from "../components/Card"
 import TableDragSelect from "../components/TableDragSelect"
 import "./css/styles.css"
@@ -7,7 +7,13 @@ import makeTables from "../components/TableList"
 
 
 let toggle = [false, false, false, false, false, false, false];
-function SchedulerTest(props) {
+const SchedulerTest = forwardRef((props, ref) => {
+  useImperativeHandle(ref, () => ({
+    testFn : ()=> {
+      return handleClick()
+    }
+  }))
+
 
   var startDate, endDate, startTime, endTime, isGroup, groupSchedule;
   if (props.roomInfo == undefined) {
@@ -19,102 +25,10 @@ function SchedulerTest(props) {
     isGroup = false;
     groupSchedule = [
       {
-          "scheduledDate": "2022-06-15",
-          "scheduledTimeList": [
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8
-          ]
-      },
-      {
-          "scheduledDate": "2022-06-14",
-          "scheduledTimeList": [
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8
-          ]
-      },
-      {
-          "scheduledDate": "2022-06-13",
-          "scheduledTimeList": [
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8
-          ]
-      },
-      {
-          "scheduledDate": "2022-06-12",
-          "scheduledTimeList": [
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8
-          ]
-      },
-      {
-          "scheduledDate": "2022-06-11",
-          "scheduledTimeList": [
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8
-          ]
-      },
-      {
-          "scheduledDate": "2022-06-10",
-          "scheduledTimeList": [
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8
-          ]
-      },
-      {
-          "scheduledDate": "2022-06-09",
-          "scheduledTimeList": [
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8
-          ]
-      },
-      {
-          "scheduledDate": "2022-06-16",
-          "scheduledTimeList": [
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8
-          ]
+        scheduledDate: "2022-08-01",
+        scheduledTimeList: [25, 26, 27, 28, 29]
       }
-  ]
+    ]
   } else {
     // props args
     startDate = new Date(props.roomInfo.startDay)
@@ -123,13 +37,8 @@ function SchedulerTest(props) {
     endTime = props.roomInfo.endTime
     isGroup = props.isGroup
     groupSchedule = props.groupSchedule
-    console.log(props.groupSchedule)
   }
 
-  return MakeScheduler(startDate, endDate, startTime, endTime, isGroup, groupSchedule)
-}
-
-function MakeScheduler(startDate, endDate, startTime, endTime, isGroup, groupSchedule) {
   // mon: 0, tue: 1, ...
   const startDateTime = startDate.getTime();
   const startDay = (startDate.getDay() + 6) % 7;
@@ -258,7 +167,8 @@ function MakeScheduler(startDate, endDate, startTime, endTime, isGroup, groupSch
         })
       }
     }
-    console.log(apiRequestBody);
+    // console.log(apiRequestBody);
+    return apiRequestBody
   };
 
   const handleLeft = () => {
@@ -291,7 +201,7 @@ function MakeScheduler(startDate, endDate, startTime, endTime, isGroup, groupSch
       changeCurrIdx({index: currIdx.index + 1})
     }
   }
-  console.log(groupState);
+
 
   return (
       <div>
@@ -329,11 +239,11 @@ function MakeScheduler(startDate, endDate, startTime, endTime, isGroup, groupSch
             )
           }
         </TableDragSelect>
-        <button onClick={handleClick}>제출하기</button>
         <button onClick={handleRight}>next</button>
         <button onClick={handleLeft}>prev</button>
       </div>
   );
-}
+
+})
 
 export default SchedulerTest

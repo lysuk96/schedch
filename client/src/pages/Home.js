@@ -126,8 +126,8 @@ function Home() {
                 }
             })
                 .then((result) => {
-                    // console.log(result.data)
-                    navigate(`/room/`+result.data);
+                    console.log(result.data)
+                    navigate(`/room/`+result.data.uuid);
                 })
                 .catch(() => { console.log('전송 실패') })
         }
