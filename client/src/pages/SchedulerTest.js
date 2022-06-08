@@ -18,19 +18,20 @@ const SchedulerTest = forwardRef((props, ref) => {
   var startDate, endDate, startTime, endTime, isGroup, groupSchedule;
   if (props.roomInfo == undefined) {
     // Dummy args
-    startDate = new Date('2022-06-01');
-    endDate = new Date('2022-06-31');
+    startDate = new Date('2022-06-09');
+    endDate = new Date('2022-06-15');
     startTime = 1;
     endTime = 30;
     isGroup = false;
     groupSchedule = [
       {
-        scheduledDate: "2022-06-01",
+        scheduledDate: "2022-06-10",
         scheduledTimeList: [25, 26, 27, 28, 29]
       }
     ]
   } else {
     // props args
+    console.log(props)
     startDate = new Date(props.roomInfo.startDay)
     endDate = new Date(props.roomInfo.endDay)
     startTime = props.roomInfo.startTime
@@ -107,9 +108,9 @@ const SchedulerTest = forwardRef((props, ref) => {
         var diff = groupBias + idx;
         var weekIdx = Math.floor(diff / 7);
         var dayIdx = (startDate.getDay() + diff + 6) % 7;
-        console.log(diff);
-        console.log(weekIdx);
-        console.log(dayIdx);
+        // console.log(diff);
+        // console.log(weekIdx);
+        // console.log(dayIdx);
         obj.scheduledTimeList.forEach(
           timeIdx => {
             groupState[weekIdx][timeIdx-startTime][dayIdx] = true;
