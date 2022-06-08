@@ -21,11 +21,11 @@ const SchedulerTest = forwardRef((props, ref) => {
     startDate = new Date('2022-06-01');
     endDate = new Date('2022-06-31');
     startTime = 1;
-    endTime = 18;
+    endTime = 30;
     isGroup = false;
     groupSchedule = [
       {
-        scheduledDate: "2022-08-01",
+        scheduledDate: "2022-06-01",
         scheduledTimeList: [25, 26, 27, 28, 29]
       }
     ]
@@ -106,7 +106,7 @@ const SchedulerTest = forwardRef((props, ref) => {
       (obj, idx) => {
         var diff = groupBias + idx;
         var weekIdx = Math.floor(diff / 7);
-        var dayIdx = diff % 7;
+        var dayIdx = (startDate.getDay() + diff + 6) % 7;
         console.log(diff);
         console.log(weekIdx);
         console.log(dayIdx);
