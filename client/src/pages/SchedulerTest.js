@@ -39,6 +39,7 @@ const SchedulerTest = forwardRef((props, ref) => {
     isGroup = props.isGroup
     groupSchedule = props.groupSchedule
   }
+  endTime += 1;
 
   // mon: 0, tue: 1, ...
   const startDateTime = startDate.getTime();
@@ -106,7 +107,7 @@ const SchedulerTest = forwardRef((props, ref) => {
     groupSchedule.forEach(
       (obj, idx) => {
         var diff = groupBias + idx;
-        var weekIdx = Math.floor(diff / 7);
+        var weekIdx = Math.floor(((startDate.getDay() + 6) % 7 + diff) / 7);
         var dayIdx = (startDate.getDay() + diff + 6) % 7;
         // console.log(diff);
         // console.log(weekIdx);
@@ -119,7 +120,7 @@ const SchedulerTest = forwardRef((props, ref) => {
       }
     )
   }
-  
+
 
 
   const [currTot, changeCurrTot] = useState({ cellsTot: tableState});
@@ -191,7 +192,7 @@ const SchedulerTest = forwardRef((props, ref) => {
       var currWeek = weeks[currIdx.index+1];
       dayChanges.forEach(
         (changeText, idx) =>{
-          console.log(currWeek[idx].toLocaleDateString())
+          // console.log(currWeek[idx].toLocaleDateString())
           changeText({ text: currWeek[idx].toLocaleDateString()})
         }
       )
