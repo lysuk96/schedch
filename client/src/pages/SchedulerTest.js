@@ -26,7 +26,7 @@ const SchedulerTest = forwardRef((props, ref) => {
     groupSchedule = [
       {
         scheduledDate: "2022-06-10",
-        scheduledTimeList: [25, 26, 27, 28, 29]
+        scheduledTimeList: []
       }
     ]
   } else {
@@ -102,7 +102,8 @@ const SchedulerTest = forwardRef((props, ref) => {
     }
   )
   var times = [...Array((endTime - startTime)).keys()].map(i => i + startTime)
-  if (groupSchedule) {
+  if (groupSchedule != null && groupSchedule != 0) { 
+    //groupSchedule 비어있지 않다면
     const groupBias = ((new Date(groupSchedule[0].scheduledDate)).getTime() - startDateTime) / (1000 * 3600 * 24);
     groupSchedule.forEach(
       (obj, idx) => {

@@ -74,7 +74,7 @@ function Room() {
         } else if(props.tab ==1) {
             return(
                 <SchedulerTest
-                ref = {scheduleRef}
+                // ref = {scheduleRef}
                 roomInfo={props.roomInfo}
                 isGroup={true}
                 groupSchedule={props.groupSchedule}
