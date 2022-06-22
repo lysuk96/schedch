@@ -107,8 +107,7 @@ function Home() {
 
     function sendRoomRequest() {
         // console.log(roomName, dateRange, timeRange)
-        // const srcUrl = process.env.REACT_APP_API_URL + '/room/'
-        const srcUrl = 'https://www.schedch.com/room/'
+        const srcUrl = process.env.REACT_APP_API_URL + 'room/'
 
 
         let sendFlag = (roomName != undefined) && (dateRange != undefined) && (timeRange != undefined)
