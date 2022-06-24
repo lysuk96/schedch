@@ -21,7 +21,7 @@ const SchedulerTest = forwardRef((props, ref) => {
     startDate = new Date('2022-06-09');
     endDate = new Date('2022-06-15');
     startTime = 1;
-    endTime = 30;
+    endTime = 5;
     isGroup = false;
     groupSchedule = [
       {
@@ -174,6 +174,18 @@ const SchedulerTest = forwardRef((props, ref) => {
     return apiRequestBody
   };
 
+  function getSelectionState() {
+    return JSON.stringify(currTot.cellsTot);
+  }
+
+  function setSelectionState(cells_json) {
+    var temp = JSON.parse(cells_json);
+    console.log(temp);
+    changeCurrTot({cellsTot: temp});
+    changeCurr({cells: [...temp[0]]});
+    changeCurrIdx({index: 0});
+  }
+
   const handleLeft = () => {
     if (currIdx.index > 0) {
       var temp = [...currTot.cellsTot];
@@ -185,6 +197,7 @@ const SchedulerTest = forwardRef((props, ref) => {
       dayChanges.forEach(
         (changeText, idx) => changeText({ text: currWeek[idx].toLocaleDateString()})
       )
+      // console.log(getSelectionState());
     }
   }
 
