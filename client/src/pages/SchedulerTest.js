@@ -22,11 +22,15 @@ const SchedulerTest = forwardRef((props, ref) => {
     endDate = new Date('2022-06-15');
     startTime = 1;
     endTime = 5;
-    isGroup = false;
+    isGroup = true;
     groupSchedule = [
       {
         scheduledDate: "2022-06-10",
-        scheduledTimeList: []
+        scheduledTimeList: [2, 3]
+      },
+      {
+        scheduledDate: "2022-06-12",
+        scheduledTimeList: [2, 3]
       }
     ]
   } else {
@@ -103,16 +107,11 @@ const SchedulerTest = forwardRef((props, ref) => {
   )
   var times = [...Array((endTime - startTime)).keys()].map(i => i + startTime)
   if (groupSchedule != null && groupSchedule != 0 && isGroup) {
-    //groupSchedule 비어있지 않다면
-    const groupBias = ((new Date(groupSchedule[0].scheduledDate)).getTime() - startDateTime) / (1000 * 3600 * 24);
     groupSchedule.forEach(
-      (obj, idx) => {
-        var diff = groupBias + idx;
+      obj => {
+        var diff = ((new Date(obj.scheduledDate)).getTime() - startDateTime) / (1000 * 3600 * 24);
         var weekIdx = Math.floor(((startDate.getDay() + 6) % 7 + diff) / 7);
         var dayIdx = (startDate.getDay() + diff + 6) % 7;
-        // console.log(diff);
-        // console.log(weekIdx);
-        // console.log(dayIdx);
         obj.scheduledTimeList.forEach(
           timeIdx => {
             groupState[weekIdx][timeIdx-startTime][dayIdx] = true;
