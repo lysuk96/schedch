@@ -102,7 +102,7 @@ const SchedulerTest = forwardRef((props, ref) => {
     }
   )
   var times = [...Array((endTime - startTime)).keys()].map(i => i + startTime)
-  if (groupSchedule != null && groupSchedule != 0) { 
+  if (groupSchedule != null && groupSchedule != 0 && isGroup) {
     //groupSchedule 비어있지 않다면
     const groupBias = ((new Date(groupSchedule[0].scheduledDate)).getTime() - startDateTime) / (1000 * 3600 * 24);
     groupSchedule.forEach(
