@@ -21,12 +21,16 @@ const SchedulerTest = forwardRef((props, ref) => {
     startDate = new Date('2022-06-09');
     endDate = new Date('2022-06-15');
     startTime = 1;
-    endTime = 30;
-    isGroup = false;
+    endTime = 5;
+    isGroup = true;
     groupSchedule = [
       {
         scheduledDate: "2022-06-10",
-        scheduledTimeList: []
+        scheduledTimeList: [2, 3]
+      },
+      {
+        scheduledDate: "2022-06-12",
+        scheduledTimeList: [2, 3]
       }
     ]
   } else {
@@ -102,17 +106,12 @@ const SchedulerTest = forwardRef((props, ref) => {
     }
   )
   var times = [...Array((endTime - startTime)).keys()].map(i => i + startTime)
-  if (groupSchedule != null && groupSchedule != 0) { 
-    //groupSchedule 비어있지 않다면
-    const groupBias = ((new Date(groupSchedule[0].scheduledDate)).getTime() - startDateTime) / (1000 * 3600 * 24);
+  if (groupSchedule != null && groupSchedule != 0 && isGroup) {
     groupSchedule.forEach(
-      (obj, idx) => {
-        var diff = groupBias + idx;
+      obj => {
+        var diff = ((new Date(obj.scheduledDate)).getTime() - startDateTime) / (1000 * 3600 * 24);
         var weekIdx = Math.floor(((startDate.getDay() + 6) % 7 + diff) / 7);
         var dayIdx = (startDate.getDay() + diff + 6) % 7;
-        // console.log(diff);
-        // console.log(weekIdx);
-        // console.log(dayIdx);
         obj.scheduledTimeList.forEach(
           timeIdx => {
             groupState[weekIdx][timeIdx-startTime][dayIdx] = true;
@@ -174,6 +173,18 @@ const SchedulerTest = forwardRef((props, ref) => {
     return apiRequestBody
   };
 
+  function getSelectionState() {
+    return JSON.stringify(currTot.cellsTot);
+  }
+
+  function setSelectionState(cells_json) {
+    var temp = JSON.parse(cells_json);
+    console.log(temp);
+    changeCurrTot({cellsTot: temp});
+    changeCurr({cells: [...temp[0]]});
+    changeCurrIdx({index: 0});
+  }
+
   const handleLeft = () => {
     if (currIdx.index > 0) {
       var temp = [...currTot.cellsTot];
@@ -185,6 +196,7 @@ const SchedulerTest = forwardRef((props, ref) => {
       dayChanges.forEach(
         (changeText, idx) => changeText({ text: currWeek[idx].toLocaleDateString()})
       )
+      // console.log(getSelectionState());
     }
   }
 
