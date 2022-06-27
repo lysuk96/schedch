@@ -4,6 +4,7 @@ import TableDragSelect from "../components/TableDragSelect"
 import "./css/styles.css"
 import hours from "../components/Hours"
 import makeTables from "../components/TableList"
+import { locale } from "moment"
 
 
 let toggle = [false, false, false, false, false, false, false];
@@ -125,13 +126,13 @@ const SchedulerTest = forwardRef((props, ref) => {
 
   const [currTot, changeCurrTot] = useState({ cellsTot: tableState});
   const [currIdx, changeCurrIdx] = useState({ index: 0});
-  const [monText, changeMonText] = useState({ text: weeks[0][0].toLocaleDateString()});
-  const [tueText, changeTueText] = useState({ text: weeks[0][1].toLocaleDateString()});
-  const [wedText, changeWedText] = useState({ text: weeks[0][2].toLocaleDateString()});
-  const [thuText, changeThuText] = useState({ text: weeks[0][3].toLocaleDateString()});
-  const [friText, changeFriText] = useState({ text: weeks[0][4].toLocaleDateString()});
-  const [satText, changeSatText] = useState({ text: weeks[0][5].toLocaleDateString()});
-  const [sunText, changeSunText] = useState({ text: weeks[0][6].toLocaleDateString()});
+  const [monText, changeMonText] = useState({ text: weeks[0][0].toLocaleDateString().substring(5)});
+  const [tueText, changeTueText] = useState({ text: weeks[0][1].toLocaleDateString().substring(5)});
+  const [wedText, changeWedText] = useState({ text: weeks[0][2].toLocaleDateString().substring(5)});
+  const [thuText, changeThuText] = useState({ text: weeks[0][3].toLocaleDateString().substring(5)});
+  const [friText, changeFriText] = useState({ text: weeks[0][4].toLocaleDateString().substring(5)});
+  const [satText, changeSatText] = useState({ text: weeks[0][5].toLocaleDateString().substring(5)});
+  const [sunText, changeSunText] = useState({ text: weeks[0][6].toLocaleDateString().substring(5)});
   const dayTexts = [monText, tueText, wedText, thuText, friText, satText, sunText];
   const dayChanges = [changeMonText, changeTueText, changeWedText, changeThuText, changeFriText, changeSatText, changeSunText];
 
@@ -222,27 +223,27 @@ const SchedulerTest = forwardRef((props, ref) => {
       <div>
         <TableDragSelect value={curr.cells} onChange={handleChange} days={""}>
           <tr>
-            <td disabled />
+            <td white disabled />
             {
               dayTexts.map(
-                text => <td disabled text={text.text}>{text.text}</td>
+                text => <td white disabled text={text.text}>{text.text}</td>
               )
             }
           </tr>
           <tr>
-            <td disabled />
-            <td disabled>Mon</td>
-            <td disabled>Tue</td>
-            <td disabled>Wed</td>
-            <td disabled>Thu</td>
-            <td disabled>Fri</td>
-            <td disabled>Sat</td>
-            <td disabled>Sun</td>
+            <td white disabled />
+            <td white disabled>월</td>
+            <td white disabled>화</td>
+            <td white disabled>수</td>
+            <td white disabled>목</td>
+            <td white disabled>금</td>
+            <td white disabled>토</td>
+            <td white disabled>일</td>
           </tr>
           {
             times.map( t =>
               <tr>
-                <td disabled>{hours[t].time}</td>
+                <td white disabled>{hours[t].time}</td>
                 <td disabled={!validDaysList[currIdx.index][0] || groupState[currIdx.index][t-startTime][0]} className="mon" />
                 <td disabled={!validDaysList[currIdx.index][1] || groupState[currIdx.index][t-startTime][1]} className="tue" />
                 <td disabled={!validDaysList[currIdx.index][2] || groupState[currIdx.index][t-startTime][2]} className="wed" />

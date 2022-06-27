@@ -228,6 +228,7 @@ class Cell extends React.Component {
   render = () => {
     let {
       className = "",
+      white,
       disabled,
       beingSelected,
       selected,
@@ -236,7 +237,11 @@ class Cell extends React.Component {
       ...props
     } = this.props;
     if (disabled) {
-      className += " cell-disabled";
+      if (white) {
+        className += " cell-white-disabled";
+      } else{
+        className += " cell-disabled";
+      }
     } else {
       className += " cell-enabled";
       if (selected) {

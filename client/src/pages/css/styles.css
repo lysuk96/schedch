@@ -61,7 +61,7 @@ html {
   .table-drag-select {
     background-color: #ddd;
     /* Stretch horizontally to fill parent */
-    width: 70%;
+    width: 100%;
     /* Keep columns same width */
     table-layout: fixed;
     /* Disable text selection */
@@ -94,7 +94,7 @@ html {
   
   /* Cells that can be interacted with */
   .table-drag-select td.cell-enabled {
-    background-color: #ddd;
+    background-color: rgb(255, 255, 255);
     /* Make the cursor a + symbol */
     /* cursor: cell; */
   }
@@ -102,19 +102,25 @@ html {
   /* Cells that cannot be interacted with */
   .table-drag-select td.cell-disabled {
     /* Put yer css here */
-    background-color: rgb(255, 255, 255);
+    background-color: #ddd;
   }
   
+  /* Cells that cannot be interacted with */
+  .table-drag-select td.cell-white-disabled {
+    /* Put yer css here */
+    background-color: rgb(255, 255, 255);
+  }
+
   /* Cells that have been selected */
   .table-drag-select td.cell-selected {
-    background-color: #a9a9a9;
+    background-color: #f19c9c;
     border-bottom: 0.1px solid;
   }
   
   /* Cells that are in the process of being selected */
   .table-drag-select td.cell-being-selected {
     /* This is the blue color y//ou see when you select text with the cursor */
-    background-color: #3f83d5;
+    background-color: #ee7e7e;
   }
   
   .table-drag-select td.mon {

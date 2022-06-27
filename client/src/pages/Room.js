@@ -64,12 +64,16 @@ function Room() {
         console.log(props)
         if(props.tab == 0){
             return (
-                <SchedulerTest
-                ref = {scheduleRef}
-                roomInfo={props.roomInfo}
-                isGroup={false}
-                groupSchedule={props.groupSchedule}
-                />
+                <div>
+                    <h6> </h6>
+                    <h6>빨간색이 불가능한 시간대입니다!</h6>
+                    <SchedulerTest
+                    ref = {scheduleRef}
+                    roomInfo={props.roomInfo}
+                    isGroup={false}
+                    groupSchedule={props.groupSchedule}
+                    />
+                </div>
             )
         } else if(props.tab ==1) {
             return(
@@ -99,6 +103,7 @@ function Room() {
                                 </CardHeader>
                                 <CardBody>
                                     <div class="schedular">
+
                                         <Nav className="mt-5" variant="tabs" defaultActiveKey="link-0">
                                             <Nav.Item>
                                                 <Nav.Link eventKey="link-0" onClick={() => { setTab(0) }}>내 스케줄</Nav.Link>
@@ -112,7 +117,7 @@ function Room() {
                                             tab={tab}
                                             roomInfo={roomInfo}
                                             groupSchedule={groupSchedule}
-                                        ></TabContent>
+                                            ></TabContent>
                                     </div>
 
                                     <div class="vertical-center" style={{ marginBottom: '50px', marginTop: '50px' }}>
@@ -144,8 +149,12 @@ function Room() {
         })
             .then((result) => {
                 console.log(result.data)
+                alert('일정이 등록되었습니다.')
             })
-            .catch(() => { console.log('전송 실패') })
+            .catch(() => { 
+                console.log('전송 실패')
+                alert('일정등록이 실패하였습니다!')
+        })
 
     }
 }
